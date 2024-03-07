@@ -1,5 +1,5 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { v4 as uuidv4, validate } from 'uuid';
+import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
 import { UserErrors } from './user.errors';
 import { UserEntity } from './user.entity';
@@ -10,7 +10,7 @@ export class UserService {
     return database.user.find((user) => user.id === id);
   }
 
-  findAll() {
+  getAll() {
     const safeUsers: UserEntity[] = [];
     database.user.forEach((user) => {
       safeUsers.push(new UserEntity({ ...user }));
@@ -18,23 +18,13 @@ export class UserService {
     return safeUsers;
   }
 
-  findUser(id: string) {
+  getById(id: string) {
     const user = this._foundUser(id);
-    if (!user) UserErrors.userNotFound();
+    if (!user) UserErrors.userNotFound;
     return new UserEntity({ ...user });
   }
 
-  updateUser(id: string, oldPassword: string, newPassword: string) {
-    const user = this._foundUser(id);
-    if (!user) UserErrors.userNotFound();
-    if (oldPassword !== user.password) UserErrors.wrongPassword();
-    user.password = newPassword;
-    user.version++;
-    user.updatedAt = Date.now();
-    return new UserEntity({ ...user });
-  }
-
-  createUser(login: string, password: string) {
+  create(login: string, password: string) {
     // не забыть добавить сюда валидацию логина и пароля
 
     const user = {
@@ -49,9 +39,19 @@ export class UserService {
     return new UserEntity({ ...user });
   }
 
-  deleteUser(id: string) {
+  update(id: string, oldPassword: string, newPassword: string) {
     const user = this._foundUser(id);
-    if (!user) UserErrors.userNotFound();
+    if (!user) UserErrors.userNotFound;
+    if (oldPassword !== user.password) UserErrors.wrongPassword;
+    user.password = newPassword;
+    user.version++;
+    user.updatedAt = Date.now();
+    return new UserEntity({ ...user });
+  }
+
+  delete(id: string) {
+    const user = this._foundUser(id);
+    if (!user) UserErrors.userNotFound;
     database.user = database.user.filter((dbuser) => dbuser !== user);
   }
 }

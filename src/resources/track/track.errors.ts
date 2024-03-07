@@ -1,16 +1,16 @@
 import { BadRequestException, HttpException } from '@nestjs/common';
 
-export class UserErrors {
+export class TrackErrors {
   static get invalidId() {
     throw new HttpException('Passed id is not valid', 400);
   }
 
-  static get invalidUserId() {
+  static get invalidTrackId() {
     throw new BadRequestException();
   }
 
-  static get userNotFound() {
-    throw new HttpException('User with this id is not found', 404);
+  static get trackNotFound() {
+    throw new HttpException('Track with this id is not found', 404);
   }
 
   static get invalidBody() {
@@ -18,9 +18,5 @@ export class UserErrors {
       'Request body does not contain required fields',
       400,
     );
-  }
-
-  static get wrongPassword() {
-    throw new HttpException('Wrong old password', 403);
   }
 }
