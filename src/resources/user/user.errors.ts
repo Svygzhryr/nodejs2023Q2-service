@@ -1,8 +1,12 @@
-import { HttpException } from '@nestjs/common';
+import { BadRequestException, HttpException } from '@nestjs/common';
 
 export class UserErrors {
   static invalidId() {
     throw new HttpException('Passed id is not valid', 400);
+  }
+
+  static invalidUserId() {
+    throw new BadRequestException();
   }
 
   static userNotFound() {
