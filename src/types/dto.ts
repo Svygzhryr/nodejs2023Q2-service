@@ -1,3 +1,5 @@
+// удалить одинаковые ДТО
+
 export interface ICreateUserDto {
   login: string;
   password: string;
@@ -20,4 +22,26 @@ export interface IUpdateTrackDto {
   artistId: string | null;
   albumId: string | null;
   duration: number;
+}
+
+export interface ICreateAlbumDto {
+  name: string;
+  year: number;
+  artistId: string | null;
+}
+
+export interface IUpdateAlbumDto {
+  name: string;
+  year: number;
+  artistId: string | null;
+}
+
+export interface ICreateArtistDto {
+  name: string;
+  grammy: boolean;
+}
+
+export interface IUpdateArtistDto {
+  name: string;
+  grammy: boolean;
 }

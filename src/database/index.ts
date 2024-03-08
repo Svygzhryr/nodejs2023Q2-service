@@ -19,6 +19,7 @@ export const database: IDatabase = {
       updatedAt: 1709715464621,
     },
   ],
+
   track: [
     {
       id: '0ef8dc1b-b77c-4a13-8f89-bf861e709429',
@@ -35,7 +36,14 @@ export const database: IDatabase = {
       duration: 271,
     },
   ],
+
   album: [],
+
   artist: [],
-  favs: new Map(),
+
+  favs: {
+    albums: [],
+    artists: [],
+    tracks: [],
+  },
 };

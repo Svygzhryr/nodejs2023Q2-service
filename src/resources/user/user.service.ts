@@ -6,9 +6,8 @@ import { UserEntity } from './user.entity';
 
 @Injectable()
 export class UserService {
-  private _foundUser(id: string) {
-    return database.user.find((user) => user.id === id);
-  }
+  private _foundUser = (id: string) =>
+    database.user.find((user) => user.id === id);
 
   getAll() {
     const safeUsers: UserEntity[] = [];
