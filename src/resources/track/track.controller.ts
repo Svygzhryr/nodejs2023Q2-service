@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
@@ -10,7 +11,7 @@ import {
 import { ICreateTrackDto, ITrack, IUpdateTrackDto } from 'src/types';
 import { TrackService } from './track.service';
 import { validate } from 'uuid';
-import { TrackErrors } from './track.errors';
+import { Errors } from 'src/errors';
 
 @Controller('track')
 export class TrackController {
@@ -23,29 +24,32 @@ export class TrackController {
 
   @Get(':id')
   getOneTrack(@Param() { id }: { id: string }): ITrack {
-    if (!validate(id)) TrackErrors.invalidId;
+    if (!validate(id)) Errors.invalidId;
     return this.trackService.findById(id);
   }
 
   @Post()
   createTrack(@Body() createTrackDto: ICreateTrackDto) {
     const { duration, name } = createTrackDto;
-    if (!duration || !name) TrackErrors.invalidBody;
+    if (!duration || !name) Errors.invalidBody;
     return this.trackService.create(createTrackDto);
   }
 
-  @Put()
+  @Put(':id')
   updateTrack(
     @Param() { id }: { id: string },
     @Body() updateTrackDto: IUpdateTrackDto,
   ) {
-    if (!validate(id)) TrackErrors.invalidId;
+    const { name, duration } = updateTrackDto;
+    if (!duration || !name) Errors.invalidBody;
+    if (!validate(id)) Errors.invalidId;
     return this.trackService.update(id, updateTrackDto);
   }
 
-  @Delete()
+  @Delete(':id')
+  @HttpCode(204)
   deleteDrack(@Param() { id }: { id: string }) {
-    if (!validate(id)) TrackErrors.invalidId;
+    if (!validate(id)) Errors.invalidId;
     return this.trackService.delete(id);
   }
 }

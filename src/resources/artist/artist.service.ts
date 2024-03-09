@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
 import { ICreateArtistDto, IUpdateArtistDto } from 'src/types';
-import { ArtistErrors } from './artist.errors';
+import { Errors } from 'src/errors';
 
 @Injectable()
 export class ArtistService {
@@ -15,7 +15,7 @@ export class ArtistService {
 
   findById(id: string) {
     const artist = this._foundArtist(id);
-    if (!artist) ArtistErrors.artistNotFound;
+    if (!artist) Errors.recordNotFound;
     return artist;
   }
 
@@ -33,7 +33,7 @@ export class ArtistService {
   update(id: string, updateArtistDto: IUpdateArtistDto) {
     const { name, grammy } = updateArtistDto;
     const artist = this._foundArtist(id);
-    if (!artist) ArtistErrors.artistNotFound;
+    if (!artist) Errors.recordNotFound;
     try {
       artist.name = name;
       artist.grammy = grammy;
@@ -45,7 +45,8 @@ export class ArtistService {
 
   delete(id: string) {
     const artist = this._foundArtist(id);
-    if (!artist) ArtistErrors.artistNotFound;
+    console.log(artist);
+    if (!artist) Errors.recordNotFound;
     database.artist = database.artist.filter((item) => item.id !== id);
   }
 }

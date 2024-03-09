@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
-import { TrackErrors } from './track.errors';
 import { ICreateTrackDto, IUpdateTrackDto } from 'src/types';
+import { Errors } from 'src/errors';
 
 @Injectable()
 export class TrackService {
@@ -15,7 +15,7 @@ export class TrackService {
 
   findById(id: string) {
     const track = this._foundTrack(id);
-    if (!track) TrackErrors.trackNotFound;
+    if (!track) Errors.recordNotFound;
     return track;
   }
 
@@ -35,7 +35,7 @@ export class TrackService {
   update(id: string, updateTrackDto: IUpdateTrackDto) {
     const { name, artistId, albumId, duration } = updateTrackDto;
     const track = this._foundTrack(id);
-    if (!track) TrackErrors.trackNotFound;
+    if (!track) Errors.recordNotFound;
     try {
       track.name = name;
       track.artistId = artistId;
@@ -49,7 +49,7 @@ export class TrackService {
 
   delete(id: string) {
     const track = this._foundTrack(id);
-    if (!track) TrackErrors.trackNotFound;
+    if (!track) Errors.recordNotFound;
     database.track = database.track.filter((item) => item.id !== id);
   }
 }

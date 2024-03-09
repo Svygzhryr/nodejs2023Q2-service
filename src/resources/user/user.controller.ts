@@ -13,8 +13,8 @@ import {
 import { ICreateUserDto, IUpdatePasswordDto, IUser } from 'src/types';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
-import { UserErrors } from './user.errors';
 import { validate } from 'uuid';
+import { Errors } from 'src/errors';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -28,14 +28,14 @@ export class UserController {
 
   @Get(':id')
   getUserById(@Param() { id }: { id: string }): UserEntity {
-    if (!validate(id)) UserErrors.invalidId;
+    if (!validate(id)) Errors.invalidId;
     return this.userService.getById(id);
   }
 
   @Post()
   createUser(@Body() createUserDto: ICreateUserDto): UserEntity {
     const { login, password } = createUserDto;
-    if (!login || !password) UserErrors.invalidBody;
+    if (!login || !password) Errors.invalidBody;
     return this.userService.create(login, password);
   }
 
@@ -45,15 +45,15 @@ export class UserController {
     @Body() updatePasswordDto: IUpdatePasswordDto,
   ): UserEntity {
     const { oldPassword, newPassword } = updatePasswordDto;
-    if (!newPassword || !oldPassword) UserErrors.invalidBody;
-    if (!validate(id)) UserErrors.invalidUserId;
+    if (!newPassword || !oldPassword) Errors.invalidBody;
+    if (!validate(id)) Errors.badId;
     return this.userService.update(id, oldPassword, newPassword);
   }
 
   @Delete(':id')
   @HttpCode(204)
   deleteUser(@Param() { id }: { id: string }) {
-    if (!validate(id)) UserErrors.invalidUserId;
+    if (!validate(id)) Errors.badId;
     return this.userService.delete(id);
   }
 }

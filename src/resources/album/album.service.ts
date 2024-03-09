@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
-import { AlbumErrors } from './album.errors';
 import { ICreateAlbumDto, IUpdateAlbumDto } from 'src/types';
+import { Errors } from 'src/errors';
 
 @Injectable()
 export class AlbumService {
@@ -15,7 +15,7 @@ export class AlbumService {
 
   findById(id: string) {
     const album = this._foundAlbum(id);
-    if (!album) AlbumErrors.albumNotFound;
+    if (!album) Errors.recordNotFound;
     return album;
   }
 
@@ -34,7 +34,7 @@ export class AlbumService {
   update(id: string, updateAlbumDto: IUpdateAlbumDto) {
     const { name, year, artistId } = updateAlbumDto;
     const album = this._foundAlbum(id);
-    if (!album) AlbumErrors.albumNotFound;
+    if (!album) Errors.recordNotFound;
     try {
       album.name = name;
       album.year = year;
@@ -47,7 +47,7 @@ export class AlbumService {
 
   delete(id: string) {
     const album = this._foundAlbum(id);
-    if (!album) AlbumErrors.albumNotFound;
+    if (!album) Errors.recordNotFound;
     database.album = database.album.filter((item) => item.id !== id);
   }
 }

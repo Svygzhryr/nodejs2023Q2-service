@@ -3,14 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { IAlbum, ICreateAlbumDto, IUpdateAlbumDto } from 'src/types';
 import { validate } from 'uuid';
-import { AlbumErrors } from './album.errors';
 import { AlbumService } from './album.service';
+import { Errors } from 'src/errors';
 
 @Controller('album')
 export class AlbumController {
@@ -23,29 +24,33 @@ export class AlbumController {
 
   @Get(':id')
   getOneAlbum(@Param() { id }: { id: string }): IAlbum {
-    if (!validate(id)) AlbumErrors.invalidId;
+    if (!validate(id)) Errors.invalidId;
     return this.albumService.findById(id);
   }
 
   @Post()
   createAlbum(@Body() createAlbumDto: ICreateAlbumDto) {
     const { name, year } = createAlbumDto;
-    if (!name || !year) AlbumErrors.invalidBody;
+    if (!name || !year) Errors.invalidBody;
     return this.albumService.create(createAlbumDto);
   }
 
-  @Put()
+  @Put(':id')
   updateAlbum(
     @Param() { id }: { id: string },
     @Body() updateAlbumDto: IUpdateAlbumDto,
   ) {
-    if (!validate(id)) AlbumErrors.invalidId;
+    const { name, year } = updateAlbumDto;
+    if (!name || typeof year !== 'number' || year < 1900) Errors.invalidBody;
+    if (!validate(id)) Errors.invalidId;
     return this.albumService.update(id, updateAlbumDto);
   }
 
-  @Delete()
+  // удаление записи также должно удалять их из связанных артистов
+  @Delete(':id')
+  @HttpCode(204)
   deleteAlbum(@Param() { id }: { id: string }) {
-    if (!validate(id)) AlbumErrors.invalidId;
+    if (!validate(id)) Errors.invalidId;
     return this.albumService.delete(id);
   }
 }

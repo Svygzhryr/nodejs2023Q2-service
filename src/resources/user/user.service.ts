@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
-import { UserErrors } from './user.errors';
 import { UserEntity } from './user.entity';
+import { Errors } from 'src/errors';
 
 @Injectable()
 export class UserService {
@@ -19,13 +19,11 @@ export class UserService {
 
   getById(id: string) {
     const user = this._foundUser(id);
-    if (!user) UserErrors.userNotFound;
+    if (!user) Errors.recordNotFound;
     return new UserEntity({ ...user });
   }
 
   create(login: string, password: string) {
-    // не забыть добавить сюда валидацию логина и пароля
-
     const user = {
       id: uuidv4(),
       login,
@@ -40,8 +38,8 @@ export class UserService {
 
   update(id: string, oldPassword: string, newPassword: string) {
     const user = this._foundUser(id);
-    if (!user) UserErrors.userNotFound;
-    if (oldPassword !== user.password) UserErrors.wrongPassword;
+    if (!user) Errors.recordNotFound;
+    if (oldPassword !== user.password) Errors.wrongPassword;
     user.password = newPassword;
     user.version++;
     user.updatedAt = Date.now();
@@ -50,7 +48,7 @@ export class UserService {
 
   delete(id: string) {
     const user = this._foundUser(id);
-    if (!user) UserErrors.userNotFound;
+    if (!user) Errors.recordNotFound;
     database.user = database.user.filter((dbuser) => dbuser !== user);
   }
 }
