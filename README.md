@@ -22,7 +22,7 @@ git clone {repository URL}
 ## Installation and running application
 
 ```
-npm install
+npm i or npm ci
 ```
 
 ```
@@ -47,10 +47,4 @@ To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-
 ```
