@@ -46,7 +46,6 @@ export class ArtistController {
     return this.artistService.update(id, updateArtistDto);
   }
 
-  // удаление здесь также должно затрагивать связанные треки и альбомы
   @Delete(':id')
   @HttpCode(204)
   deleteArtist(@Param() { id }: { id: string }) {

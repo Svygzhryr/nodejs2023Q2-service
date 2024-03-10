@@ -1,5 +1,3 @@
-// удалить одинаковые ДТО
-
 export interface ICreateUserDto {
   login: string;
   password: string;

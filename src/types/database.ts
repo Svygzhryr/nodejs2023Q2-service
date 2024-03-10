@@ -1,4 +1,4 @@
-import { IAlbum, IArtist, IFavorites, ITrack, IUser } from './resources';
+import { IAlbum, IArtist, ITrack, IUser } from './resources';
 
 export interface IFavs {
   artists: IArtist[];
