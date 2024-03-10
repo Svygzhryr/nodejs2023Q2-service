@@ -9,6 +9,9 @@ export class TrackService {
   private _foundTrack = (id: string) =>
     database.track.find((track) => track.id === id);
 
+  private _foundTrackFavs = (id: string) =>
+    database.favs.tracks.find((track) => track.id === id);
+
   findAll() {
     return database.track;
   }
@@ -49,7 +52,14 @@ export class TrackService {
 
   delete(id: string) {
     const track = this._foundTrack(id);
+    const trackInFav = this._foundTrackFavs(id);
     if (!track) Errors.recordNotFound;
     database.track = database.track.filter((item) => item.id !== id);
+
+    if (trackInFav) {
+      database.favs.tracks = database.favs.tracks.filter(
+        (track) => track.id !== id,
+      );
+    }
   }
 }

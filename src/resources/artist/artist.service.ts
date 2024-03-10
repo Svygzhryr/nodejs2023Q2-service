@@ -9,6 +9,15 @@ export class ArtistService {
   private _foundArtist = (id: string) =>
     database.artist.find((artist) => artist.id === id);
 
+  private _foundTrackByArtist = (id: string) =>
+    database.track.find((track) => track.artistId === id);
+
+  private _foundAlbumByArtist = (id: string) =>
+    database.album.find((album) => album.artistId === id);
+
+  private _foundArtistFavs = (id: string) =>
+    database.favs.artists.find((artist) => artist.id === id);
+
   findAll() {
     return database.artist;
   }
@@ -45,8 +54,25 @@ export class ArtistService {
 
   delete(id: string) {
     const artist = this._foundArtist(id);
-    console.log(artist);
+    const artistInFav = this._foundArtistFavs(id);
+    const track = this._foundTrackByArtist(id);
+    const album = this._foundAlbumByArtist(id);
+
     if (!artist) Errors.recordNotFound;
     database.artist = database.artist.filter((item) => item.id !== id);
+
+    if (track) {
+      track.artistId = null;
+    }
+
+    if (album) {
+      album.artistId = null;
+    }
+
+    if (artistInFav) {
+      database.favs.artists = database.favs.artists.filter(
+        (artist) => artist.id !== id,
+      );
+    }
   }
 }

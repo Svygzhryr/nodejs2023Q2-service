@@ -9,6 +9,12 @@ export class AlbumService {
   private _foundAlbum = (id: string) =>
     database.album.find((album) => album.id === id);
 
+  private _foundTrackByAlbum = (id: string) =>
+    database.track.find((track) => track.albumId === id);
+
+  private _foundAlbumFavs = (id: string) =>
+    database.favs.albums.find((album) => album.id === id);
+
   findAll() {
     return database.album;
   }
@@ -47,7 +53,18 @@ export class AlbumService {
 
   delete(id: string) {
     const album = this._foundAlbum(id);
+    const track = this._foundTrackByAlbum(id);
+    const albumInFavs = this._foundAlbumFavs(id);
     if (!album) Errors.recordNotFound;
     database.album = database.album.filter((item) => item.id !== id);
+    if (track) {
+      track.albumId = null;
+    }
+
+    if (albumInFavs) {
+      database.favs.albums = database.favs.albums.filter(
+        (album) => album.id !== id,
+      );
+    }
   }
 }

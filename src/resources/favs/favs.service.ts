@@ -28,7 +28,7 @@ export class FavsService {
 
   addTrack(id: string) {
     const track = this._foundTrack(id);
-    if (!track) Errors.recordNotFound;
+    if (!track) Errors.unprocessableEntity;
     database.favs.tracks.push(track);
   }
 
@@ -42,7 +42,7 @@ export class FavsService {
 
   addAlbum(id: string) {
     const album = this._foundAlbum(id);
-    if (!album) Errors.recordNotFound;
+    if (!album) Errors.unprocessableEntity;
     database.favs.albums.push(album);
   }
 
@@ -56,7 +56,7 @@ export class FavsService {
 
   addArtist(id: string) {
     const artist = this._foundArtist(id);
-    if (!artist) Errors.recordNotFound;
+    if (!artist) Errors.unprocessableEntity;
     database.favs.artists.push(artist);
   }
 

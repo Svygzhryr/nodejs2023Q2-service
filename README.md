@@ -1,5 +1,13 @@
 # Home Library Service
 
+For now it's a simple CRUD api for musical service, including the following resources:
+
+- /track
+- /artist
+- /album
+- /favs
+- /user
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
@@ -11,13 +19,11 @@
 git clone {repository URL}
 ```
 
-## Installing NPM modules
+## Installation and running application
 
 ```
 npm install
 ```
-
-## Running application
 
 ```
 npm start
@@ -46,27 +52,5 @@ npm run test -- <path to suite>
 To run all test with authorization
 
 ```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
 
 ```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging

@@ -23,4 +23,8 @@ export class Errors {
   static get badId() {
     throw new BadRequestException();
   }
+
+  static get unprocessableEntity() {
+    throw new HttpException('Unprocessable entity', 422);
+  }
 }
