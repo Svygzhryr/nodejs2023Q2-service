@@ -4,6 +4,7 @@ import { database } from 'src/database';
 import { UserEntity } from './user.entity';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
+import { IUser } from 'src/types';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     database.user.forEach((user) => {
       safeUsers.push(new UserEntity({ ...user }));
     });
-    const users = await this.prisma.users.findMany();
+    const users = (await this.prisma.users.findMany()) as unknown as IUser[];
     return users;
   }
 

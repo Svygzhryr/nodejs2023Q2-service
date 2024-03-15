@@ -46,7 +46,6 @@ export class AlbumController {
     return this.albumService.update(id, updateAlbumDto);
   }
 
-  // удаление записи также должно удалять их из связанных артистов
   @Delete(':id')
   @HttpCode(204)
   deleteAlbum(@Param() { id }: { id: string }) {
