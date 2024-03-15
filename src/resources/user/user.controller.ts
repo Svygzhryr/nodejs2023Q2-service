@@ -20,9 +20,8 @@ import { Errors } from 'src/errors';
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private userService: UserService) {}
-
   @Get()
-  getAllUsers(): UserEntity[] {
+  getAllUsers(): Promise<UserEntity[]> {
     return this.userService.getAll();
   }
 
@@ -33,7 +32,7 @@ export class UserController {
   }
 
   @Post()
-  createUser(@Body() createUserDto: ICreateUserDto): UserEntity {
+  createUser(@Body() createUserDto: ICreateUserDto): Promise<UserEntity> {
     const { login, password } = createUserDto;
     if (!login || !password) Errors.invalidBody;
     return this.userService.create(login, password);

@@ -3,18 +3,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
 import { UserEntity } from './user.entity';
 import { Errors } from 'src/errors';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class UserService {
+  constructor(private prisma: PrismaService) {}
+
   private _foundUser = (id: string) =>
     database.user.find((user) => user.id === id);
 
-  getAll() {
+  async getAll() {
     const safeUsers: UserEntity[] = [];
     database.user.forEach((user) => {
       safeUsers.push(new UserEntity({ ...user }));
     });
-    return safeUsers;
+    const users = await this.prisma.users.findMany();
+    return users;
   }
 
   getById(id: string) {
@@ -23,7 +27,7 @@ export class UserService {
     return new UserEntity({ ...user });
   }
 
-  create(login: string, password: string) {
+  async create(login: string, password: string) {
     const user = {
       id: uuidv4(),
       login,
@@ -32,7 +36,8 @@ export class UserService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    database.user.push(user);
+    // database.user.push(user);
+    await this.prisma.users.create({ data: user });
     return new UserEntity({ ...user });
   }
 
