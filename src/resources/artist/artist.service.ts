@@ -3,9 +3,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
 import { ICreateArtistDto, IUpdateArtistDto } from 'src/types';
 import { Errors } from 'src/errors';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class ArtistService {
+  constructor(private prisma: PrismaService) {}
+
   private _foundArtist = (id: string) =>
     database.artist.find((artist) => artist.id === id);
 
@@ -18,8 +21,8 @@ export class ArtistService {
   private _foundArtistFavs = (id: string) =>
     database.favs.artists.find((artist) => artist.id === id);
 
-  findAll() {
-    return database.artist;
+  async findAll() {
+    return await this.prisma.artists.findMany();
   }
 
   findById(id: string) {
@@ -28,14 +31,15 @@ export class ArtistService {
     return artist;
   }
 
-  create(createArtistDto: ICreateArtistDto) {
+  async create(createArtistDto: ICreateArtistDto) {
     const { name, grammy } = createArtistDto;
     const artist = {
       id: uuidv4(),
       name,
       grammy,
     };
-    database.artist.push(artist);
+    // database.artist.push(artist);
+    await this.prisma.artists.create({ data: artist });
     return artist;
   }
 

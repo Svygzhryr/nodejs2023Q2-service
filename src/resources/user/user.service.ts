@@ -19,6 +19,7 @@ export class UserService {
       safeUsers.push(new UserEntity({ ...user }));
     });
     const users = (await this.prisma.users.findMany()) as unknown as IUser[];
+    console.log(users);
     return users;
   }
 

@@ -18,7 +18,7 @@ export class ArtistController {
   constructor(private artistService: ArtistService) {}
 
   @Get()
-  getAllArtists(): IArtist[] {
+  getAllArtists(): Promise<IArtist[]> {
     return this.artistService.findAll();
   }
 
@@ -29,7 +29,7 @@ export class ArtistController {
   }
 
   @Post()
-  createArtist(@Body() createArtistDto: ICreateArtistDto): IArtist {
+  createArtist(@Body() createArtistDto: ICreateArtistDto): Promise<IArtist> {
     const { name, grammy } = createArtistDto;
     if (!name || grammy === undefined) Errors.invalidBody;
     return this.artistService.create(createArtistDto);
