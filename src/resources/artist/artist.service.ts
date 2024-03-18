@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
-import { ICreateArtistDto, IUpdateArtistDto } from 'src/types';
+import { IArtist, ICreateArtistDto, IUpdateArtistDto } from 'src/types';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
 
@@ -9,24 +9,64 @@ import { PrismaService } from '../prisma.service';
 export class ArtistService {
   constructor(private prisma: PrismaService) {}
 
-  private _foundArtist = (id: string) =>
-    database.artist.find((artist) => artist.id === id);
+  private _foundArtist = async (id: string) => {
+    try {
+      return (await this.prisma.artists.findUnique({
+        where: {
+          id,
+        },
+      })) as unknown as IArtist;
+    } catch (err) {
+      console.log(err);
+      throw Errors.internalServer;
+    }
+  };
 
-  private _foundTrackByArtist = (id: string) =>
-    database.track.find((track) => track.artistId === id);
+  private _foundTrackByArtist = async (id: string) => {
+    try {
+      return await this.prisma.tracks.findFirst({
+        where: {
+          artist_id: id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
 
-  private _foundAlbumByArtist = (id: string) =>
-    database.album.find((album) => album.artistId === id);
+  private _foundAlbumByArtist = async (id: string) => {
+    try {
+      return await this.prisma.albums.findFirst({
+        where: {
+          id_artist: id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
 
-  private _foundArtistFavs = (id: string) =>
+  // private _foundArtistFavs = async (id: string) =>
+  // {
+  //   try {
+  //     return await this.prisma.favs.findFirst({
+  //       where: {
+  //         artists
+  //       },
+  //     });
+  //   } catch (err) {
+  //     throw Errors.internalServer;
+  //   }
+  // };
+  private _foundArtistFavs = async (id: string) =>
     database.favs.artists.find((artist) => artist.id === id);
 
   async findAll() {
     return await this.prisma.artists.findMany();
   }
 
-  findById(id: string) {
-    const artist = this._foundArtist(id);
+  async findById(id: string) {
+    const artist = await this._foundArtist(id);
     if (!artist) Errors.recordNotFound;
     return artist;
   }
@@ -38,14 +78,14 @@ export class ArtistService {
       name,
       grammy,
     };
-    // database.artist.push(artist);
+    console.log(artist);
     await this.prisma.artists.create({ data: artist });
     return artist;
   }
 
-  update(id: string, updateArtistDto: IUpdateArtistDto) {
+  async update(id: string, updateArtistDto: IUpdateArtistDto) {
     const { name, grammy } = updateArtistDto;
-    const artist = this._foundArtist(id);
+    const artist = await this._foundArtist(id);
     if (!artist) Errors.recordNotFound;
     try {
       artist.name = name;
@@ -56,21 +96,25 @@ export class ArtistService {
     return artist;
   }
 
-  delete(id: string) {
-    const artist = this._foundArtist(id);
-    const artistInFav = this._foundArtistFavs(id);
-    const track = this._foundTrackByArtist(id);
-    const album = this._foundAlbumByArtist(id);
+  async delete(id: string) {
+    const artist = await this._foundArtist(id);
+    const artistInFav = await this._foundArtistFavs(id);
+    const track = await this._foundTrackByArtist(id);
+    const album = await this._foundAlbumByArtist(id);
 
     if (!artist) Errors.recordNotFound;
-    database.artist = database.artist.filter((item) => item.id !== id);
+    this.prisma.artists.delete({
+      where: {
+        id,
+      },
+    });
 
     if (track) {
-      track.artistId = null;
+      track.artist_id = null;
     }
 
     if (album) {
-      album.artistId = null;
+      album.id_artist = null;
     }
 
     if (artistInFav) {

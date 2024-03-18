@@ -23,7 +23,7 @@ export class ArtistController {
   }
 
   @Get(':id')
-  getOneArtist(@Param() { id }: { id: string }): IArtist {
+  getOneArtist(@Param() { id }: { id: string }): Promise<IArtist> {
     if (!validate(id)) Errors.invalidId;
     return this.artistService.findById(id);
   }

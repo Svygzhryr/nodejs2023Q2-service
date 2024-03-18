@@ -43,8 +43,8 @@ export class UserService {
       login,
       password,
       version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     await this.prisma.users.create({ data: user });
     return new UserEntity({ ...user });
@@ -56,7 +56,7 @@ export class UserService {
     if (oldPassword !== user.password) Errors.wrongPassword;
     user.password = newPassword;
     user.version++;
-    user.updatedAt = Date.now();
+    user.updatedAt = new Date();
     await this.prisma.users.update({
       where: {
         id,
