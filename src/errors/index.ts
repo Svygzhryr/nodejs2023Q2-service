@@ -1,4 +1,8 @@
-import { HttpException, BadRequestException } from '@nestjs/common';
+import {
+  HttpException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 export class Errors {
   static get invalidId() {
@@ -26,5 +30,9 @@ export class Errors {
 
   static get unprocessableEntity() {
     throw new HttpException('Unprocessable entity', 422);
+  }
+
+  static get internalServer() {
+    throw new InternalServerErrorException();
   }
 }

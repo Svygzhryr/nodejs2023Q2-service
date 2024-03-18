@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { database } from 'src/database';
 import { UserEntity } from './user.entity';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
@@ -10,21 +9,30 @@ import { IUser } from 'src/types';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  private _foundUser = (id: string) =>
-    database.user.find((user) => user.id === id);
+  private _foundUser = async (id: string) => {
+    try {
+      return (await this.prisma.users.findUnique({
+        where: {
+          id,
+        },
+      })) as unknown as IUser;
+    } catch (err) {
+      Errors.internalServer;
+    }
+  };
 
   async getAll() {
     const safeUsers: UserEntity[] = [];
-    database.user.forEach((user) => {
+    const users = await this.prisma.users.findMany();
+    users.forEach((user) => {
       safeUsers.push(new UserEntity({ ...user }));
     });
-    const users = (await this.prisma.users.findMany()) as unknown as IUser[];
-    console.log(users);
-    return users;
+    return safeUsers;
   }
 
-  getById(id: string) {
-    const user = this._foundUser(id);
+  async getById(id: string) {
+    const user = await this._foundUser(id);
+    console.log(user);
     if (!user) Errors.recordNotFound;
     return new UserEntity({ ...user });
   }
@@ -38,24 +46,33 @@ export class UserService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    // database.user.push(user);
     await this.prisma.users.create({ data: user });
     return new UserEntity({ ...user });
   }
 
-  update(id: string, oldPassword: string, newPassword: string) {
-    const user = this._foundUser(id);
+  async update(id: string, oldPassword: string, newPassword: string) {
+    const user = await this._foundUser(id);
     if (!user) Errors.recordNotFound;
     if (oldPassword !== user.password) Errors.wrongPassword;
     user.password = newPassword;
     user.version++;
     user.updatedAt = Date.now();
+    await this.prisma.users.update({
+      where: {
+        id,
+      },
+      data: { ...user },
+    });
     return new UserEntity({ ...user });
   }
 
-  delete(id: string) {
-    const user = this._foundUser(id);
+  async delete(id: string) {
+    const user = await this._foundUser(id);
     if (!user) Errors.recordNotFound;
-    database.user = database.user.filter((dbuser) => dbuser !== user);
+    await this.prisma.users.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
