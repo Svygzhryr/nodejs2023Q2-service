@@ -25,7 +25,7 @@ export class AlbumService {
     try {
       return await this.prisma.tracks.findFirst({
         where: {
-          album_id: id,
+          albumId: id,
         },
       });
     } catch (err) {
@@ -52,8 +52,9 @@ export class AlbumService {
       id: uuidv4(),
       name,
       year,
-      artist_id: artistId || null,
+      artistId: artistId || null,
     };
+    console.log(album);
     await this.prisma.albums.create({
       data: { ...album },
     });
@@ -67,10 +68,11 @@ export class AlbumService {
     try {
       album.name = name;
       album.year = year;
-      album.artist_id = artistId;
+      album.artistId = artistId || null;
     } catch (err) {
       throw new InternalServerErrorException();
     }
+    console.log(album);
     await this.prisma.albums.update({
       where: {
         id,
@@ -96,9 +98,11 @@ export class AlbumService {
         where: {
           id: track.id,
         },
-        data: { ...track },
+        data: { ...track, albumId: null },
       });
     }
+
+    console.log(await this._foundTrackByAlbum(id));
 
     if (albumInFavs) {
       database.favs.albums = database.favs.albums.filter(

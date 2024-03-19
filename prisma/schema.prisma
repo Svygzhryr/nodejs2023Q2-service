@@ -8,13 +8,13 @@ datasource db {
 }
 
 model Albums {
-  id        String   @id @db.Uuid
-  name      String   @db.VarChar
-  year      Int
-  artist_id String?  @db.Uuid
-  Artists   Artists? @relation(fields: [artist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "artist_fkey")
-  Favs      Favs[]
-  Tracks    Tracks[]
+  id       String   @id @db.Uuid
+  name     String   @db.VarChar
+  year     Int
+  artistId String?  @db.Uuid
+  Artists  Artists? @relation(fields: [artistId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "artist_fkey")
+  Favs     Favs[]
+  Tracks   Tracks[]
 }
 
 model Artists {
@@ -37,14 +37,14 @@ model Favs {
 }
 
 model Tracks {
-  id        String   @id @db.Uuid
-  name      String   @db.VarChar
-  duration  Int
-  artist_id String?  @db.Uuid
-  album_id  String?  @db.Uuid
-  Favs      Favs[]
-  Albums    Albums?  @relation(fields: [album_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "album_fkey")
-  Artists   Artists? @relation(fields: [artist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "artist_fkey")
+  id       String   @id @db.Uuid
+  name     String   @db.VarChar
+  duration Int
+  artistId String?  @db.Uuid
+  albumId  String?  @db.Uuid
+  Favs     Favs[]
+  Albums   Albums?  @relation(fields: [albumId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "album_fkey")
+  Artists  Artists? @relation(fields: [artistId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "artist_fkey")
 }
 
 model Users {

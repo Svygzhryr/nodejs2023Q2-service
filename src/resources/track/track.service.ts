@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
-import { ICreateTrackDto, IUpdateTrackDto } from 'src/types';
+import { ICreateTrackDto, ITrack, IUpdateTrackDto } from 'src/types';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
 
@@ -36,7 +36,7 @@ export class TrackService {
 
   async create(createTrackDto: ICreateTrackDto) {
     const { name, artistId, albumId, duration } = createTrackDto;
-    const track = {
+    const track: ITrack = {
       id: uuidv4(),
       name: name,
       artistId: artistId || null,
@@ -44,6 +44,7 @@ export class TrackService {
       duration,
     };
     await this.prisma.tracks.create({ data: { ...track } });
+    console.log(track);
     return track;
   }
 
@@ -53,8 +54,8 @@ export class TrackService {
     if (!track) Errors.recordNotFound;
     try {
       track.name = name;
-      track.artist_id = artistId;
-      track.album_id = albumId;
+      track.artistId = artistId;
+      track.albumId = albumId;
       track.duration = duration;
     } catch (err) {
       throw new InternalServerErrorException();
