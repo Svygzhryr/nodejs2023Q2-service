@@ -18,12 +18,12 @@ export class TrackController {
   constructor(private trackService: TrackService) {}
 
   @Get()
-  getAllTracks(): ITrack[] {
+  getAllTracks(): Promise<ITrack[]> {
     return this.trackService.findAll();
   }
 
   @Get(':id')
-  getOneTrack(@Param() { id }: { id: string }): ITrack {
+  getOneTrack(@Param() { id }: { id: string }): Promise<ITrack> {
     if (!validate(id)) Errors.invalidId;
     return this.trackService.findById(id);
   }

@@ -18,12 +18,12 @@ export class AlbumController {
   constructor(private albumService: AlbumService) {}
 
   @Get()
-  getAllAlbums(): IAlbum[] {
+  getAllAlbums(): Promise<IAlbum[]> {
     return this.albumService.findAll();
   }
 
   @Get(':id')
-  getOneAlbum(@Param() { id }: { id: string }): IAlbum {
+  getOneAlbum(@Param() { id }: { id: string }): Promise<IAlbum> {
     if (!validate(id)) Errors.invalidId;
     return this.albumService.findById(id);
   }

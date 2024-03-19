@@ -3,26 +3,38 @@ import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
 import { ICreateTrackDto, IUpdateTrackDto } from 'src/types';
 import { Errors } from 'src/errors';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class TrackService {
-  private _foundTrack = (id: string) =>
-    database.track.find((track) => track.id === id);
+  constructor(private prisma: PrismaService) {}
+
+  private _foundTrack = async (id: string) => {
+    try {
+      return await this.prisma.tracks.findUnique({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
 
   private _foundTrackFavs = (id: string) =>
     database.favs.tracks.find((track) => track.id === id);
 
-  findAll() {
-    return database.track;
+  async findAll() {
+    return await this.prisma.tracks.findMany();
   }
 
-  findById(id: string) {
-    const track = this._foundTrack(id);
+  async findById(id: string) {
+    const track = await this._foundTrack(id);
     if (!track) Errors.recordNotFound;
     return track;
   }
 
-  create(createTrackDto: ICreateTrackDto) {
+  async create(createTrackDto: ICreateTrackDto) {
     const { name, artistId, albumId, duration } = createTrackDto;
     const track = {
       id: uuidv4(),
@@ -31,30 +43,40 @@ export class TrackService {
       albumId: albumId || null,
       duration,
     };
-    database.track.push(track);
+    await this.prisma.tracks.create({ data: { ...track } });
     return track;
   }
 
-  update(id: string, updateTrackDto: IUpdateTrackDto) {
+  async update(id: string, updateTrackDto: IUpdateTrackDto) {
     const { name, artistId, albumId, duration } = updateTrackDto;
-    const track = this._foundTrack(id);
+    const track = await this._foundTrack(id);
     if (!track) Errors.recordNotFound;
     try {
       track.name = name;
-      track.artistId = artistId;
-      track.albumId = albumId;
+      track.artist_id = artistId;
+      track.album_id = albumId;
       track.duration = duration;
     } catch (err) {
       throw new InternalServerErrorException();
     }
+    await this.prisma.tracks.update({
+      where: {
+        id,
+      },
+      data: { ...track },
+    });
     return track;
   }
 
-  delete(id: string) {
-    const track = this._foundTrack(id);
+  async delete(id: string) {
+    const track = await this._foundTrack(id);
     const trackInFav = this._foundTrackFavs(id);
     if (!track) Errors.recordNotFound;
-    database.track = database.track.filter((item) => item.id !== id);
+    await this.prisma.tracks.delete({
+      where: {
+        id,
+      },
+    });
 
     if (trackInFav) {
       database.favs.tracks = database.favs.tracks.filter(

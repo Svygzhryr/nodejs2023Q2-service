@@ -3,62 +3,101 @@ import { v4 as uuidv4 } from 'uuid';
 import { database } from 'src/database';
 import { ICreateAlbumDto, IUpdateAlbumDto } from 'src/types';
 import { Errors } from 'src/errors';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class AlbumService {
-  private _foundAlbum = (id: string) =>
-    database.album.find((album) => album.id === id);
+  constructor(private prisma: PrismaService) {}
 
-  private _foundTrackByAlbum = (id: string) =>
-    database.track.find((track) => track.albumId === id);
+  private _foundAlbum = async (id: string) => {
+    try {
+      return await this.prisma.albums.findUnique({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
+
+  private _foundTrackByAlbum = async (id: string) => {
+    try {
+      return await this.prisma.tracks.findFirst({
+        where: {
+          album_id: id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
 
   private _foundAlbumFavs = (id: string) =>
     database.favs.albums.find((album) => album.id === id);
 
-  findAll() {
-    return database.album;
+  async findAll() {
+    return await this.prisma.albums.findMany();
   }
 
-  findById(id: string) {
-    const album = this._foundAlbum(id);
+  async findById(id: string) {
+    const album = await this._foundAlbum(id);
     if (!album) Errors.recordNotFound;
     return album;
   }
 
-  create(createAlbumDto: ICreateAlbumDto) {
+  async create(createAlbumDto: ICreateAlbumDto) {
     const { name, year, artistId } = createAlbumDto;
     const album = {
       id: uuidv4(),
       name,
       year,
-      artistId: artistId || null,
+      artist_id: artistId || null,
     };
-    database.album.push(album);
+    await this.prisma.albums.create({
+      data: { ...album },
+    });
     return album;
   }
 
-  update(id: string, updateAlbumDto: IUpdateAlbumDto) {
+  async update(id: string, updateAlbumDto: IUpdateAlbumDto) {
     const { name, year, artistId } = updateAlbumDto;
-    const album = this._foundAlbum(id);
+    const album = await this._foundAlbum(id);
     if (!album) Errors.recordNotFound;
     try {
       album.name = name;
       album.year = year;
-      album.artistId = artistId;
+      album.artist_id = artistId;
     } catch (err) {
       throw new InternalServerErrorException();
     }
+    await this.prisma.albums.update({
+      where: {
+        id,
+      },
+      data: { ...album },
+    });
     return album;
   }
 
-  delete(id: string) {
-    const album = this._foundAlbum(id);
-    const track = this._foundTrackByAlbum(id);
+  async delete(id: string) {
+    const album = await this._foundAlbum(id);
+    const track = await this._foundTrackByAlbum(id);
     const albumInFavs = this._foundAlbumFavs(id);
     if (!album) Errors.recordNotFound;
-    database.album = database.album.filter((item) => item.id !== id);
+    await this.prisma.albums.delete({
+      where: {
+        id,
+      },
+    });
+
     if (track) {
-      track.albumId = null;
+      await this.prisma.tracks.update({
+        where: {
+          id: track.id,
+        },
+        data: { ...track },
+      });
     }
 
     if (albumInFavs) {

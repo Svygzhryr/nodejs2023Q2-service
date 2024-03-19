@@ -16,8 +16,8 @@ export interface IArtist {
 export interface ITrack {
   id: string;
   name: string;
-  artistId: string | null;
-  albumId: string | null;
+  artist_id: string | null;
+  album_id: string | null;
   duration: number;
 }
 
@@ -25,7 +25,7 @@ export interface IAlbum {
   id: string;
   name: string;
   year: number;
-  artistId: string | null;
+  artist_id: string | null;
 }
 
 export interface IFavorites {
