@@ -9,7 +9,7 @@ ALTER TABLE "Albums" DROP CONSTRAINT "artist_id";
 
 -- AlterTable
 ALTER TABLE "Albums" DROP COLUMN "artist_id",
-ADD COLUMN     "id_artist" UUID;
+ADD COLUMN     "artist_id" UUID;
 
 -- AddForeignKey
-ALTER TABLE "Albums" ADD CONSTRAINT "artist_fkey" FOREIGN KEY ("id_artist") REFERENCES "Artists"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "Albums" ADD CONSTRAINT "artist_fkey" FOREIGN KEY ("artist_id") REFERENCES "Artists"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

@@ -1,14 +1,14 @@
 /*
   Warnings:
 
-  - You are about to drop the column `id_artist` on the `Albums` table. All the data in the column will be lost.
+  - You are about to drop the column `artist_id` on the `Albums` table. All the data in the column will be lost.
 
 */
 -- DropForeignKey
 ALTER TABLE "Albums" DROP CONSTRAINT "artist_fkey";
 
 -- AlterTable
-ALTER TABLE "Albums" DROP COLUMN "id_artist",
+ALTER TABLE "Albums" DROP COLUMN "artist_id",
 ADD COLUMN     "artist_id" UUID,
 ALTER COLUMN "name" SET DATA TYPE VARCHAR;
 

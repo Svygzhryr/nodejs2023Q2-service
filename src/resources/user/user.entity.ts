@@ -4,8 +4,8 @@ export class UserEntity {
   id: string;
   login: string;
   version: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: number | bigint;
+  updatedAt: number | bigint;
 
   @Exclude({ toPlainOnly: true })
   password: string;

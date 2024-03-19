@@ -11,13 +11,12 @@ export class ArtistService {
 
   private _foundArtist = async (id: string) => {
     try {
-      return (await this.prisma.artists.findUnique({
+      return await this.prisma.artists.findUnique({
         where: {
           id,
         },
-      })) as unknown as IArtist;
+      });
     } catch (err) {
-      console.log(err);
       throw Errors.internalServer;
     }
   };
@@ -38,7 +37,7 @@ export class ArtistService {
     try {
       return await this.prisma.albums.findFirst({
         where: {
-          id_artist: id,
+          artist_id: id,
         },
       });
     } catch (err) {
@@ -85,36 +84,61 @@ export class ArtistService {
 
   async update(id: string, updateArtistDto: IUpdateArtistDto) {
     const { name, grammy } = updateArtistDto;
-    const artist = await this._foundArtist(id);
+    let artist = await this._foundArtist(id);
     if (!artist) Errors.recordNotFound;
-    try {
-      artist.name = name;
-      artist.grammy = grammy;
-    } catch (err) {
-      throw new InternalServerErrorException();
-    }
+    artist = {
+      id,
+      name,
+      grammy,
+    };
+    await this.prisma.artists.update({
+      where: {
+        id,
+      },
+      data: { ...artist },
+    });
     return artist;
   }
 
+  // проверить, доходят ли до него вообще трек и альбом
   async delete(id: string) {
     const artist = await this._foundArtist(id);
     const artistInFav = await this._foundArtistFavs(id);
-    const track = await this._foundTrackByArtist(id);
-    const album = await this._foundAlbumByArtist(id);
+
+    let track = await this._foundTrackByArtist(id);
+    let album = await this._foundAlbumByArtist(id);
+
+    console.log(track, album);
 
     if (!artist) Errors.recordNotFound;
-    this.prisma.artists.delete({
+    await this.prisma.artists.delete({
       where: {
         id,
       },
     });
 
     if (track) {
-      track.artist_id = null;
+      await this.prisma.tracks.update({
+        where: {
+          id: track.id,
+        },
+        data: {
+          artist_id: null,
+          ...track,
+        },
+      });
     }
 
     if (album) {
-      album.id_artist = null;
+      await this.prisma.albums.update({
+        where: {
+          id: album.id,
+        },
+        data: {
+          artist_id: null,
+          ...album,
+        },
+      });
     }
 
     if (artistInFav) {

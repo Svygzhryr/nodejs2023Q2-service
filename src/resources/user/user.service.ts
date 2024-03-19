@@ -5,6 +5,11 @@ import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
 import { IUser } from 'src/types';
 
+// nestjs 'do not know how to serialize a BigInt' fix
+BigInt.prototype['toJSON'] = function () {
+  return this.toString();
+};
+
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -32,7 +37,6 @@ export class UserService {
 
   async getById(id: string) {
     const user = await this._foundUser(id);
-    console.log(user);
     if (!user) Errors.recordNotFound;
     return new UserEntity({ ...user });
   }
@@ -43,8 +47,8 @@ export class UserService {
       login,
       password,
       version: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     };
     await this.prisma.users.create({ data: user });
     return new UserEntity({ ...user });
@@ -56,13 +60,15 @@ export class UserService {
     if (oldPassword !== user.password) Errors.wrongPassword;
     user.password = newPassword;
     user.version++;
-    user.updatedAt = new Date();
+    user.updatedAt = +Date.now();
+    user.createdAt = Number(user.createdAt);
     await this.prisma.users.update({
       where: {
         id,
       },
       data: { ...user },
     });
+
     return new UserEntity({ ...user });
   }
 

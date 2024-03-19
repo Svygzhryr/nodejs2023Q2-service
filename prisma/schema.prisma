@@ -11,8 +11,8 @@ model Albums {
   id        String   @id @db.Uuid
   name      String   @db.VarChar
   year      Int
-  id_artist String?  @db.Uuid
-  Artists   Artists? @relation(fields: [id_artist], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "artist_fkey")
+  artist_id String?  @db.Uuid
+  Artists   Artists? @relation(fields: [artist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "artist_fkey")
   Favs      Favs[]
   Tracks    Tracks[]
 }
@@ -48,10 +48,10 @@ model Tracks {
 }
 
 model Users {
-  id        String   @id @db.Uuid
-  login     String   @db.VarChar
-  password  String   @db.VarChar
+  id        String @id @db.Uuid
+  login     String @db.VarChar
+  password  String @db.VarChar
   version   Int
-  createdAt DateTime @db.Date
-  updatedAt DateTime @db.Date
+  createdAt BigInt
+  updatedAt BigInt
 }

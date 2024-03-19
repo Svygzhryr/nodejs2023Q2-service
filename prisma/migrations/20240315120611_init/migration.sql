@@ -3,7 +3,7 @@ CREATE TABLE "Albums" (
     "id" UUID NOT NULL,
     "name" CHAR(1) NOT NULL,
     "year" INTEGER NOT NULL,
-    "id_artist" UUID,
+    "artist_id" UUID,
 
     CONSTRAINT "Albums_pkey" PRIMARY KEY ("id")
 );
@@ -51,7 +51,7 @@ CREATE TABLE "Users" (
 );
 
 -- AddForeignKey
-ALTER TABLE "Albums" ADD CONSTRAINT "artist_fkey" FOREIGN KEY ("id_artist") REFERENCES "Artists"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "Albums" ADD CONSTRAINT "artist_fkey" FOREIGN KEY ("artist_id") REFERENCES "Artists"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "Favs" ADD CONSTRAINT "album_fkey" FOREIGN KEY ("albums") REFERENCES "Albums"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
