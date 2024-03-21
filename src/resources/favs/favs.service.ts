@@ -1,70 +1,100 @@
 import { Injectable } from '@nestjs/common';
-import { database } from 'src/database';
 import { Errors } from 'src/errors';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class FavsService {
-  private _foundTrack = (id: string) =>
-    database.track.find((track) => track.id === id);
+  constructor(private prisma: PrismaService) {}
 
-  private _foundFavTrack = (id: string) =>
-    database.favs.tracks.find((track) => track.id === id);
+  private _foundTrack = async (id: string) => {
+    try {
+      return await this.prisma.tracks.findUnique({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
 
-  private _foundArtist = (id: string) =>
-    database.artist.find((artist) => artist.id === id);
+  private _foundArtist = async (id: string) =>
+    await this.prisma.artists.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  private _foundFavArtist = (id: string) =>
-    database.favs.artists.find((track) => track.id === id);
+  private _foundAlbum = async (id: string) =>
+    await this.prisma.albums.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  private _foundAlbum = (id: string) =>
-    database.album.find((album) => album.id === id);
-
-  private _foundFavAlbum = (id: string) =>
-    database.favs.albums.find((track) => track.id === id);
-
-  findAll() {
-    return database.favs;
+  // посмотреть что возвращалось раньше ( с локальной дб)
+  // и что возвращается сейчас
+  async findAll() {
+    return await this.prisma.favs.findMany();
   }
 
-  addTrack(id: string) {
-    const track = this._foundTrack(id);
+  async addTrack(id: string) {
+    const track = await this._foundTrack(id);
     if (!track) Errors.unprocessableEntity;
-    database.favs.tracks.push(track);
+    await this.prisma.favs.create({
+      data: {
+        tracks: track.id,
+      },
+    });
   }
 
-  removeTrack(id: string) {
-    const track = this._foundFavTrack(id);
+  async removeTrack(id: string) {
+    const track = await this._foundTrack(id);
     if (!track) Errors.recordNotFound;
-    database.favs.tracks = database.favs.tracks.filter(
-      (item) => item.id !== id,
-    );
+    await this.prisma.favs.deleteMany({
+      where: {
+        tracks: track.id,
+      },
+    });
   }
 
-  addAlbum(id: string) {
-    const album = this._foundAlbum(id);
+  async addAlbum(id: string) {
+    const album = await this._foundAlbum(id);
     if (!album) Errors.unprocessableEntity;
-    database.favs.albums.push(album);
+    await this.prisma.favs.create({
+      data: {
+        albums: album.id,
+      },
+    });
   }
 
-  removeAlbum(id: string) {
-    const album = this._foundFavAlbum(id);
+  async removeAlbum(id: string) {
+    const album = await this._foundAlbum(id);
     if (!album) Errors.recordNotFound;
-    database.favs.albums = database.favs.albums.filter(
-      (item) => item.id !== id,
-    );
+    await this.prisma.favs.deleteMany({
+      where: {
+        albums: album.id,
+      },
+    });
   }
 
-  addArtist(id: string) {
-    const artist = this._foundArtist(id);
+  async addArtist(id: string) {
+    const artist = await this._foundArtist(id);
     if (!artist) Errors.unprocessableEntity;
-    database.favs.artists.push(artist);
+    await this.prisma.favs.create({
+      data: {
+        artists: artist.id,
+      },
+    });
   }
 
-  removeArtist(id: string) {
-    const artist = this._foundFavArtist(id);
+  async removeArtist(id: string) {
+    const artist = await this._foundArtist(id);
     if (!artist) Errors.recordNotFound;
-    database.favs.artists = database.favs.artists.filter(
-      (item) => item.id !== id,
-    );
+    await this.prisma.favs.deleteMany({
+      where: {
+        artists: artist.id,
+      },
+    });
   }
 }

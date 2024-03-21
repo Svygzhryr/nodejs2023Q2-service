@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { database } from 'src/database';
 import { ICreateAlbumDto, IUpdateAlbumDto } from 'src/types';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
@@ -33,8 +32,12 @@ export class AlbumService {
     }
   };
 
-  private _foundAlbumFavs = (id: string) =>
-    database.favs.albums.find((album) => album.id === id);
+  private _foundAlbumFavs = async (id: string) =>
+    await this.prisma.favs.findFirst({
+      where: {
+        albums: id,
+      },
+    });
 
   async findAll() {
     return await this.prisma.albums.findMany();
@@ -87,11 +90,7 @@ export class AlbumService {
     const track = await this._foundTrackByAlbum(id);
     const albumInFavs = this._foundAlbumFavs(id);
     if (!album) Errors.recordNotFound;
-    await this.prisma.albums.delete({
-      where: {
-        id,
-      },
-    });
+    console.log(album, id);
 
     if (track) {
       await this.prisma.tracks.update({
@@ -102,12 +101,18 @@ export class AlbumService {
       });
     }
 
-    console.log(await this._foundTrackByAlbum(id));
+    await this.prisma.albums.delete({
+      where: {
+        id,
+      },
+    });
 
     if (albumInFavs) {
-      database.favs.albums = database.favs.albums.filter(
-        (album) => album.id !== id,
-      );
+      await this.prisma.favs.deleteMany({
+        where: {
+          albums: album.id,
+        },
+      });
     }
   }
 }

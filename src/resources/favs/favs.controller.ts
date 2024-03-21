@@ -1,6 +1,5 @@
 import { Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { FavsService } from './favs.service';
-import { database } from 'src/database';
 import { IFavs } from 'src/types';
 import { validate } from 'uuid';
 import { Errors } from 'src/errors';
@@ -10,7 +9,7 @@ export class FavsController {
   constructor(private favsService: FavsService) {}
 
   @Get()
-  getAllFavs(): IFavs {
+  getAllFavs(): Promise<IFavs[]> {
     return this.favsService.findAll();
   }
 

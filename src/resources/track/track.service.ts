@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { database } from 'src/database';
 import { ICreateTrackDto, ITrack, IUpdateTrackDto } from 'src/types';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
@@ -21,8 +20,17 @@ export class TrackService {
     }
   };
 
-  private _foundTrackFavs = (id: string) =>
-    database.favs.tracks.find((track) => track.id === id);
+  private _foundTrackFavs = async (id: string) => {
+    try {
+      return await this.prisma.favs.findFirst({
+        where: {
+          tracks: id,
+        },
+      });
+    } catch (err) {
+      throw Errors.internalServer;
+    }
+  };
 
   async findAll() {
     return await this.prisma.tracks.findMany();
@@ -80,9 +88,11 @@ export class TrackService {
     });
 
     if (trackInFav) {
-      database.favs.tracks = database.favs.tracks.filter(
-        (track) => track.id !== id,
-      );
+      this.prisma.favs.deleteMany({
+        where: {
+          tracks: track.id,
+        },
+      });
     }
   }
 }

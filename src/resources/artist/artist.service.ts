@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { database } from 'src/database';
 import { IArtist, ICreateArtistDto, IUpdateArtistDto } from 'src/types';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
@@ -60,7 +59,11 @@ export class ArtistService {
   //   }
   // };
   private _foundArtistFavs = async (id: string) =>
-    database.favs.artists.find((artist) => artist.id === id);
+    await this.prisma.favs.findFirst({
+      where: {
+        artists: id,
+      },
+    });
 
   async findAll() {
     return await this.prisma.artists.findMany();
@@ -102,7 +105,6 @@ export class ArtistService {
     return artist;
   }
 
-  // нужно делать поля опциональными
   async delete(id: string) {
     const artist = await this._foundArtist(id);
     const artistInFav = await this._foundArtistFavs(id);
@@ -110,7 +112,29 @@ export class ArtistService {
     let track = await this._foundTrackByArtist(id);
     let album = await this._foundAlbumByArtist(id);
 
-    console.log(track, album);
+    if (track) {
+      await this.prisma.tracks.update({
+        where: {
+          id: track.id,
+        },
+        data: {
+          ...track,
+          artistId: null,
+        },
+      });
+    }
+
+    if (album) {
+      await this.prisma.albums.update({
+        where: {
+          id: album.id,
+        },
+        data: {
+          ...track,
+          artistId: null,
+        },
+      });
+    }
 
     if (!artist) Errors.recordNotFound;
     await this.prisma.artists.delete({
@@ -119,32 +143,12 @@ export class ArtistService {
       },
     });
 
-    if (track) {
-      await this.prisma.tracks.delete({
-        where: {
-          id: track.id,
-        },
-        select: {
-          artistId: null,
-        },
-      });
-    }
-
-    if (album) {
-      await this.prisma.albums.delete({
-        where: {
-          id: album.id,
-        },
-        select: {
-          artistId: null,
-        },
-      });
-    }
-
     if (artistInFav) {
-      database.favs.artists = database.favs.artists.filter(
-        (artist) => artist.id !== id,
-      );
+      await this.prisma.favs.deleteMany({
+        where: {
+          artists: artist.id,
+        },
+      });
     }
   }
 }
