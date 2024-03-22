@@ -2,6 +2,7 @@ import {
   HttpException,
   BadRequestException,
   InternalServerErrorException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 
 export class Errors {

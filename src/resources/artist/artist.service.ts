@@ -46,25 +46,6 @@ export class ArtistService {
     }
   };
 
-  // private _foundArtistFavs = async (id: string) =>
-  // {
-  //   try {
-  //     return await this.prisma.favs.findFirst({
-  //       where: {
-  //         artists
-  //       },
-  //     });
-  //   } catch (err) {
-  //     throw Errors.internalServer;
-  //   }
-  // };
-  private _foundArtistFavs = async (id: string) =>
-    await this.prisma.favs.findFirst({
-      where: {
-        artists: id,
-      },
-    });
-
   async findAll() {
     return await this.prisma.artists.findMany();
   }
@@ -95,6 +76,7 @@ export class ArtistService {
       id,
       name,
       grammy,
+      favorite: artist.favorite,
     };
     await this.prisma.artists.update({
       where: {
@@ -107,7 +89,6 @@ export class ArtistService {
 
   async delete(id: string) {
     const artist = await this._foundArtist(id);
-    const artistInFav = await this._foundArtistFavs(id);
 
     let track = await this._foundTrackByArtist(id);
     let album = await this._foundAlbumByArtist(id);
@@ -130,7 +111,7 @@ export class ArtistService {
           id: album.id,
         },
         data: {
-          ...track,
+          ...album,
           artistId: null,
         },
       });
@@ -142,13 +123,5 @@ export class ArtistService {
         id,
       },
     });
-
-    if (artistInFav) {
-      await this.prisma.favs.deleteMany({
-        where: {
-          artists: artist.id,
-        },
-      });
-    }
   }
 }

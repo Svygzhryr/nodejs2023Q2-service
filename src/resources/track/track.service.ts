@@ -22,9 +22,10 @@ export class TrackService {
 
   private _foundTrackFavs = async (id: string) => {
     try {
-      return await this.prisma.favs.findFirst({
+      return await this.prisma.tracks.findFirst({
         where: {
-          tracks: id,
+          id,
+          favorite: 'favorite',
         },
       });
     } catch (err) {
@@ -87,12 +88,12 @@ export class TrackService {
       },
     });
 
-    if (trackInFav) {
-      this.prisma.favs.deleteMany({
-        where: {
-          tracks: track.id,
-        },
-      });
-    }
+    // if (trackInFav) {
+    //   this.prisma.favs.deleteMany({
+    //     where: {
+    //       tracks: track.id,
+    //     },
+    //   });
+    // }
   }
 }

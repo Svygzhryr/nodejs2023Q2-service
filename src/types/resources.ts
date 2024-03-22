@@ -11,6 +11,7 @@ export interface IArtist {
   id: string;
   name: string;
   grammy: boolean;
+  favorite?: string | null;
 }
 
 export interface ITrack {
@@ -19,6 +20,7 @@ export interface ITrack {
   artistId: string | null;
   albumId: string | null;
   duration: number;
+  favorite?: string | null;
 }
 
 export interface IAlbum {
@@ -26,10 +28,11 @@ export interface IAlbum {
   name: string;
   year: number;
   artistId: string | null;
+  favorite?: string | null;
 }
 
 export interface IFavorites {
-  artists: string[];
-  albums: string[];
-  tracks: string[];
+  artists: IArtist[];
+  albums: IAlbum[];
+  tracks: ITrack[];
 }

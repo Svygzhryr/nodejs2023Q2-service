@@ -12,28 +12,27 @@ model Albums {
   name     String   @db.VarChar
   year     Int
   artistId String?  @db.Uuid
+  favorite String?  @db.VarChar
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "albums")
   Artists  Artists? @relation(fields: [artistId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artist_fkey")
-  Favs     Favs[]
   Tracks   Tracks[]
 }
 
 model Artists {
-  id     String   @id @db.Uuid
-  name   String   @db.VarChar
-  grammy Boolean
-  Albums Albums[]
-  Favs   Favs[]
-  Tracks Tracks[]
+  id       String   @id @db.Uuid
+  name     String   @db.VarChar
+  grammy   Boolean
+  favorite String?  @db.VarChar
+  Albums   Albums[]
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artists")
+  Tracks   Tracks[]
 }
 
 model Favs {
-  artists String?  @db.Uuid
-  albums  String?  @db.Uuid
-  tracks  String?  @db.Uuid
-  id      Int      @id @default(autoincrement())
-  Albums  Albums?  @relation(fields: [albums], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "album_fkey")
-  Artists Artists? @relation(fields: [artists], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artist_fkey")
-  Tracks  Tracks?  @relation(fields: [tracks], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "tracks_fkey")
+  id      String    @id @default("favorite") @db.VarChar
+  albums  Albums[]
+  artists Artists[]
+  tracks  Tracks[]
 }
 
 model Tracks {
@@ -42,9 +41,10 @@ model Tracks {
   duration Int
   artistId String?  @db.Uuid
   albumId  String?  @db.Uuid
-  Favs     Favs[]
+  favorite String?  @db.VarChar
   Albums   Albums?  @relation(fields: [albumId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "album_fkey")
   Artists  Artists? @relation(fields: [artistId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artist_fkey")
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "tracks")
 }
 
 model Users {

@@ -1,10 +1,10 @@
 import { IAlbum, IArtist, ITrack, IUser } from './resources';
 
 export interface IFavs {
-  id?: number;
-  artists?: string;
-  albums?: string;
-  tracks?: string;
+  id?: string;
+  artists: IArtist[];
+  albums: IAlbum[];
+  tracks: ITrack[];
 }
 
 export interface IDatabase {

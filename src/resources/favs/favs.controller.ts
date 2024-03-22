@@ -1,6 +1,14 @@
-import { Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { FavsService } from './favs.service';
-import { IFavs } from 'src/types';
+import { IAlbum, IArtist, IFavorites, IFavs, ITrack } from 'src/types';
 import { validate } from 'uuid';
 import { Errors } from 'src/errors';
 
@@ -9,46 +17,46 @@ export class FavsController {
   constructor(private favsService: FavsService) {}
 
   @Get()
-  getAllFavs(): Promise<IFavs[]> {
+  getAllFavs(): Promise<IFavs> {
     return this.favsService.findAll();
   }
 
   @Post('track/:id')
-  addTrackToFavs(@Param() { id }: { id: string }): void {
+  addTrackToFavs(@Param() { id }: { id: string }): Promise<ITrack> {
     if (!validate(id)) Errors.invalidId;
-    this.favsService.addTrack(id);
+    return this.favsService.addTrack(id);
   }
 
   @Delete('track/:id')
   @HttpCode(204)
-  removeTrackFromFavs(@Param() { id }: { id: string }): void {
+  removeTrackFromFavs(@Param() { id }: { id: string }): Promise<void> {
     if (!validate(id)) Errors.invalidId;
-    this.favsService.removeTrack(id);
+    return this.favsService.removeTrack(id);
   }
 
   @Post('album/:id')
-  addAlbumToFavs(@Param() { id }: { id: string }): void {
+  addAlbumToFavs(@Param() { id }: { id: string }): Promise<IAlbum> {
     if (!validate(id)) Errors.invalidId;
-    this.favsService.addAlbum(id);
+    return this.favsService.addAlbum(id);
   }
 
   @Delete('album/:id')
   @HttpCode(204)
-  removeAlbumFromFavs(@Param() { id }: { id: string }): void {
+  removeAlbumFromFavs(@Param() { id }: { id: string }): Promise<void> {
     if (!validate(id)) Errors.invalidId;
-    this.favsService.removeAlbum(id);
+    return this.favsService.removeAlbum(id);
   }
 
   @Post('artist/:id')
-  addArtistToFavs(@Param() { id }: { id: string }): void {
+  addArtistToFavs(@Param() { id }: { id: string }): Promise<IArtist> {
     if (!validate(id)) Errors.invalidId;
-    this.favsService.addArtist(id);
+    return this.favsService.addArtist(id);
   }
 
   @Delete('artist/:id')
   @HttpCode(204)
-  removeArtistFromFavs(@Param() { id }: { id: string }): void {
+  removeArtistFromFavs(@Param() { id }: { id: string }): Promise<void> {
     if (!validate(id)) Errors.invalidId;
-    this.favsService.removeArtist(id);
+    return this.favsService.removeArtist(id);
   }
 }

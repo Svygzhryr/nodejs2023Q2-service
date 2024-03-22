@@ -32,13 +32,6 @@ export class AlbumService {
     }
   };
 
-  private _foundAlbumFavs = async (id: string) =>
-    await this.prisma.favs.findFirst({
-      where: {
-        albums: id,
-      },
-    });
-
   async findAll() {
     return await this.prisma.albums.findMany();
   }
@@ -88,7 +81,6 @@ export class AlbumService {
   async delete(id: string) {
     const album = await this._foundAlbum(id);
     const track = await this._foundTrackByAlbum(id);
-    const albumInFavs = this._foundAlbumFavs(id);
     if (!album) Errors.recordNotFound;
     console.log(album, id);
 
@@ -107,12 +99,12 @@ export class AlbumService {
       },
     });
 
-    if (albumInFavs) {
-      await this.prisma.favs.deleteMany({
-        where: {
-          albums: album.id,
-        },
-      });
-    }
+    // if (albumInFavs) {
+    //   await this.prisma.favs.deleteMany({
+    //     where: {
+    //       albums: album.id,
+    //     },
+    //   });
+    // }
   }
 }
