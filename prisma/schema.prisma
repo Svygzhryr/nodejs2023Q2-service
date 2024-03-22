@@ -13,8 +13,8 @@ model Albums {
   year     Int
   artistId String?  @db.Uuid
   favorite String?  @db.VarChar
-  Favs     Favs?    @relation(fields: [favorite], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "albums")
-  Artists  Artists? @relation(fields: [artistId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artist_fkey")
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onUpdate: SetNull, map: "albums")
+  Artists  Artists? @relation(fields: [artistId], references: [id], onUpdate: SetNull, map: "artist_fkey")
   Tracks   Tracks[]
 }
 
@@ -24,7 +24,7 @@ model Artists {
   grammy   Boolean
   favorite String?  @db.VarChar
   Albums   Albums[]
-  Favs     Favs?    @relation(fields: [favorite], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artists")
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onUpdate: SetNull, map: "artists")
   Tracks   Tracks[]
 }
 
@@ -42,9 +42,9 @@ model Tracks {
   artistId String?  @db.Uuid
   albumId  String?  @db.Uuid
   favorite String?  @db.VarChar
-  Albums   Albums?  @relation(fields: [albumId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "album_fkey")
-  Artists  Artists? @relation(fields: [artistId], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "artist_fkey")
-  Favs     Favs?    @relation(fields: [favorite], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "tracks")
+  Albums   Albums?  @relation(fields: [albumId], references: [id], onUpdate: SetNull, map: "album_fkey")
+  Artists  Artists? @relation(fields: [artistId], references: [id], onUpdate: SetNull, map: "artist_fkey")
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onUpdate: SetNull, map: "tracks")
 }
 
 model Users {
