@@ -10,4 +10,4 @@ COPY . .
 
 RUN npm run build
 
-CMD [ "npm", "run", "start:dev" ]
+CMD npx prisma migrate dev && npx prisma generate && npm run start:dev
