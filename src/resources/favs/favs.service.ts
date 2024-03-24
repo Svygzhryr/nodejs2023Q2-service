@@ -48,7 +48,7 @@ export class FavsService {
 
   async findAll() {
     await this._favsCheck();
-    let favs = await this.prisma.favs.findFirst({
+    const favs = await this.prisma.favs.findFirst({
       select: {
         tracks: {
           select: {

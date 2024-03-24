@@ -87,8 +87,8 @@ export class ArtistService {
   async delete(id: string) {
     const artist = await this._foundArtist(id);
 
-    let track = await this._foundTrackByArtist(id);
-    let album = await this._foundAlbumByArtist(id);
+    const track = await this._foundTrackByArtist(id);
+    const album = await this._foundAlbumByArtist(id);
 
     if (track) {
       await this.prisma.tracks.update({
