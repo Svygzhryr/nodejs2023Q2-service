@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+EXPOSE ${APP_PORT}
 
-CMD npx prisma migrate dev && npx prisma generate && npm run start:dev
+CMD npm run docker:setup
