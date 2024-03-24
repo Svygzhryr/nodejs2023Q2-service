@@ -53,7 +53,6 @@ export class TrackService {
       duration,
     };
     await this.prisma.tracks.create({ data: { ...track } });
-    console.log(track);
     return track;
   }
 
