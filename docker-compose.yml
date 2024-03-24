@@ -12,7 +12,7 @@ services:
       POSTGRES_HOST: ${DATABASE_HOST}
       POSTGRES_PORT: ${DATABASE_PORT}
     ports:
-      - ${DATABASE_PORT}
+      - ${DATABASE_PORT}:${DATABASE_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - pglogs:/var/log/postgresql
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${APP_PORT}
+      - ${APP_PORT}:${APP_PORT}
     volumes:
       - /app/node_modules
       - ./src:/app/src

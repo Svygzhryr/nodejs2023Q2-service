@@ -50,7 +50,6 @@ export class AlbumService {
       year,
       artistId: artistId || null,
     };
-    console.log(album);
     await this.prisma.albums.create({
       data: { ...album },
     });
@@ -68,7 +67,6 @@ export class AlbumService {
     } catch (err) {
       throw new InternalServerErrorException();
     }
-    console.log(album);
     await this.prisma.albums.update({
       where: {
         id,
@@ -82,7 +80,6 @@ export class AlbumService {
     const album = await this._foundAlbum(id);
     const track = await this._foundTrackByAlbum(id);
     if (!album) Errors.recordNotFound;
-    console.log(album, id);
 
     if (track) {
       await this.prisma.tracks.update({

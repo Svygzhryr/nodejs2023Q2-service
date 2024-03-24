@@ -28,7 +28,6 @@ export class ArtistService {
         },
       });
     } catch (err) {
-      console.log('ERRORR', err);
       throw Errors.internalServer;
     }
   };
@@ -41,7 +40,6 @@ export class ArtistService {
         },
       });
     } catch (err) {
-      console.log('ERRORR', err);
       throw Errors.internalServer;
     }
   };
@@ -63,7 +61,6 @@ export class ArtistService {
       name,
       grammy,
     };
-    console.log(artist);
     await this.prisma.artists.create({ data: artist });
     return artist;
   }
