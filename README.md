@@ -7,12 +7,13 @@ For now it's a simple CRUD api for musical service, including the following reso
 - /album
 - /favs
 - /user
+- /docs (follow this endpoint for more information)
 
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-- Docker Desktop [Download & install Docker Desktop](https://www.docker.com/products/docker-desktop/) to view/edit running docker images and containers
+- Docker Desktop [Download & install Docker Desktop](https://www.docker.com/products/docker-desktop/) to view/edit running docker images and containers as well as docker engine setup
 
 ## Downloading & installing
 
@@ -31,7 +32,7 @@ git checkout docker-orm
 npm i or npm ci
 ```
 4. Rename `.env.example` to `.env`
-or create am `.env` file in the current directory
+or create `.env` file in the current directory and opy example's contents
 
 ## Running application
 
