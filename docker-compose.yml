@@ -1,0 +1,48 @@
+services:
+  db:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    image: postgres
+    container_name: postgres-container-pavelmihailov
+    environment:
+      POSTGRES_DB: ${DATABASE_DB}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
+    networks:
+      - app-db
+
+  app:
+    # name may be too long, but helps distinguishing my project containers from others
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: app-image-pavelmihailov
+    container_name: app-container-pavelmihailov
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    volumes:
+      - /app/node_modules
+      - ./src:/app/src
+    depends_on:
+      - db
+    networks:
+      - app-db
+    restart: always
+
+volumes:
+  pgdata:
+  pglogs:
+
+networks:
+  app-db:
+    driver: bridge

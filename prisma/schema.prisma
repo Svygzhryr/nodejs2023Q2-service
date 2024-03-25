@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Albums {
+  id       String   @id @db.Uuid
+  name     String   @db.VarChar
+  year     Int
+  artistId String?  @db.Uuid
+  favorite String?  @db.VarChar
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onUpdate: SetNull, map: "albums")
+  Artists  Artists? @relation(fields: [artistId], references: [id], onUpdate: SetNull, map: "artist_fkey")
+  Tracks   Tracks[]
+}
+
+model Artists {
+  id       String   @id @db.Uuid
+  name     String   @db.VarChar
+  grammy   Boolean
+  favorite String?  @db.VarChar
+  Albums   Albums[]
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onUpdate: SetNull, map: "artists")
+  Tracks   Tracks[]
+}
+
+model Favs {
+  id      String    @id @default("favorite") @db.VarChar
+  albums  Albums[]
+  artists Artists[]
+  tracks  Tracks[]
+}
+
+model Tracks {
+  id       String   @id @db.Uuid
+  name     String   @db.VarChar
+  duration Int
+  artistId String?  @db.Uuid
+  albumId  String?  @db.Uuid
+  favorite String?  @db.VarChar
+  Albums   Albums?  @relation(fields: [albumId], references: [id], onUpdate: SetNull, map: "album_fkey")
+  Artists  Artists? @relation(fields: [artistId], references: [id], onUpdate: SetNull, map: "artist_fkey")
+  Favs     Favs?    @relation(fields: [favorite], references: [id], onUpdate: SetNull, map: "tracks")
+}
+
+model Users {
+  id        String @id @db.Uuid
+  login     String @db.VarChar
+  password  String @db.VarChar
+  version   Int
+  createdAt BigInt
+  updatedAt BigInt
+}

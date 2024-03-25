@@ -1,29 +1,51 @@
 # Home Library Service
 
+For now it's a simple CRUD api for musical service, including the following resources:
+
+- /track
+- /artist
+- /album
+- /favs
+- /user
+- /docs (follow this endpoint for more information)
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker Desktop [Download & install Docker Desktop](https://www.docker.com/products/docker-desktop/) to view/edit running docker images and containers as well as docker engine setup
 
-## Downloading
+## Downloading & installing
 
+1. First, clone the repository:
 ```
 git clone {repository URL}
 ```
-
-## Installing NPM modules
-
+2. Switch to the current branch: 
 ```
-npm install
+git switch docker-orm
+or
+git checkout docker-orm
 ```
+3. Then, install the dependencies using the following command in cloned project directory:
+```
+npm i or npm ci
+```
+4. Rename `.env.example` to `.env`
+or create `.env` file in the current directory and opy example's contents
 
 ## Running application
 
-```
-npm start
-```
+To start building and running docker image:
 
-After starting the app on port (4000 as default) you can open
+```
+npm run docker
+```
+Wait until container finishes building..
+
+### And everything's done! You can run tests, or use `npm run docker:scan` to scan the image for vulnerabilities
+
+After starting the app you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
@@ -43,30 +65,11 @@ To run only one of all test suites
 npm run test -- <path to suite>
 ```
 
-To run all test with authorization
+## Some important things
 
-```
-npm run test:auth
-```
+Note that default .env ports are:
+- api: 4000
+- postgre: 5432
 
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+My docker image hub link:
+https://hub.docker.com/repository/docker/svygzhryr/music-service/tags?page=1&ordering=last_updated
