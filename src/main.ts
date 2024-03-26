@@ -12,9 +12,9 @@ async function bootstrap() {
 
   const port = process.env.PORT || 4000;
   const app = await NestFactory.create(AppModule);
-
   SwaggerModule.setup('docs', app, document);
   await app.listen(port);
+  console.log(`Server is listening on port ${port}`);
 }
 
 bootstrap();
