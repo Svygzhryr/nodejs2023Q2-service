@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
 import { ICreateUserDto, IUpdatePasswordDto, IUser } from 'src/types';
@@ -15,9 +16,11 @@ import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { validate } from 'uuid';
 import { Errors } from 'src/errors';
+import { HttpExceptionFilter } from 'src/exception.filter';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseFilters(new HttpExceptionFilter())
 export class UserController {
   constructor(private userService: UserService) {}
   @Get()

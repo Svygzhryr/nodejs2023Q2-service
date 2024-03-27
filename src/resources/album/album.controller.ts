@@ -7,13 +7,16 @@ import {
   Param,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { IAlbum, ICreateAlbumDto, IUpdateAlbumDto } from 'src/types';
 import { validate } from 'uuid';
 import { AlbumService } from './album.service';
 import { Errors } from 'src/errors';
+import { HttpExceptionFilter } from 'src/exception.filter';
 
 @Controller('album')
+@UseFilters(new HttpExceptionFilter())
 export class AlbumController {
   constructor(private albumService: AlbumService) {}
 

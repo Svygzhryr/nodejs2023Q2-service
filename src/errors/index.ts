@@ -2,9 +2,7 @@ import {
   HttpException,
   BadRequestException,
   InternalServerErrorException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
-
 export class Errors {
   static get invalidId() {
     throw new HttpException('Passed id is not valid', 400);
@@ -37,3 +35,11 @@ export class Errors {
     throw new InternalServerErrorException();
   }
 }
+
+export const errors = {
+  400: 'Bad request. Check your url path or request body',
+  403: 'Forbidden. Invalid credentials',
+  404: 'Record with this id is not found',
+  422: 'Unprocessable entity',
+  500: 'Internal server error',
+};

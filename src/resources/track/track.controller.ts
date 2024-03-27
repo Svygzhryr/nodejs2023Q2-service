@@ -7,13 +7,16 @@ import {
   Param,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { ICreateTrackDto, ITrack, IUpdateTrackDto } from 'src/types';
 import { TrackService } from './track.service';
 import { validate } from 'uuid';
 import { Errors } from 'src/errors';
+import { HttpExceptionFilter } from 'src/exception.filter';
 
 @Controller('track')
+@UseFilters(new HttpExceptionFilter())
 export class TrackController {
   constructor(private trackService: TrackService) {}
 

@@ -23,7 +23,6 @@ export class LoggerMiddleware implements NestMiddleware {
       this.logger.logRequest(originalUrl, body, query);
       this.logger.logResponse(response.statusCode);
     });
-
     next();
   }
 }

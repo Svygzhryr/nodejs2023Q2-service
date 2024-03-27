@@ -3,16 +3,18 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   Post,
+  UseFilters,
 } from '@nestjs/common';
 import { FavsService } from './favs.service';
 import { IAlbum, IArtist, IFavorites, IFavs, ITrack } from 'src/types';
 import { validate } from 'uuid';
 import { Errors } from 'src/errors';
+import { HttpExceptionFilter } from 'src/exception.filter';
 
 @Controller('favs')
+@UseFilters(new HttpExceptionFilter())
 export class FavsController {
   constructor(private favsService: FavsService) {}
 

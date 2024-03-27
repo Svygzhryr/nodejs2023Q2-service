@@ -7,13 +7,16 @@ import {
   Param,
   Post,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { IArtist, ICreateArtistDto, IUpdateArtistDto } from 'src/types';
 import { validate } from 'uuid';
 import { ArtistService } from './artist.service';
 import { Errors } from 'src/errors';
+import { HttpExceptionFilter } from 'src/exception.filter';
 
 @Controller('artist')
+@UseFilters(new HttpExceptionFilter())
 export class ArtistController {
   constructor(private artistService: ArtistService) {}
 
