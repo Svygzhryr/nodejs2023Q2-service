@@ -47,15 +47,15 @@ export class MyLogger implements LoggerService {
     throw new Error('Method not implemented.');
   }
   logRequest(url: string, body: string, query: string) {
-    const formRequestData = `[REQUEST] ${this._currentTime()} - URL: ${url}, BODY: ${body}, QUERY: ${query} \n`;
+    const formRequestData = `${this._currentTime()} [REQUEST]  - URL: ${url}, BODY: ${body}, QUERY: ${query} \n`;
     this._createLogFile(this._logPath(), formRequestData);
   }
   logResponse(statusCode: number) {
-    const formResponseData = `[RESPONSE] ${this._currentTime()} - Status code - ${statusCode} \n`;
+    const formResponseData = `${this._currentTime()} [RESPONSE] - Status code - ${statusCode} \n`;
     this._createLogFile(this._logPath(), formResponseData);
   }
   error(message: string) {
-    const formErrorData = `**ERROR** - ${this._currentTime()} - ${message} \n`;
+    const formErrorData = `${this._currentTime()} **ERROR** - ${message} \n`;
     this._createLogFile(this._logPath(), formErrorData, true);
   }
   warn(message: string) {

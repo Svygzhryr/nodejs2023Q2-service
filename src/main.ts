@@ -6,6 +6,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {
   AllExceptionsFilter,
+  logLevels,
   startUncaughtExceptionListener,
   startUnhandledRejectionListener,
 } from './exception.filter';
@@ -16,7 +17,10 @@ async function bootstrap() {
   const document = yaml.parse(file);
 
   const port = process.env.PORT || 4000;
-  const app = await NestFactory.create(AppModule);
+  const level = logLevels[process.env.LOG_MAX_LEVEL];
+  const app = await NestFactory.create(AppModule, {
+    logger: level,
+  });
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));

@@ -10,6 +10,7 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { MyLogger } from './logger/MyLogger.service';
 
 const logger = new MyLogger();
+export const logLevels = ['fatal', 'error', 'warn', 'log', 'debug', 'verbose'];
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
