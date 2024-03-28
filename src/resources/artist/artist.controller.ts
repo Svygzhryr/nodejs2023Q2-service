@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -49,8 +50,8 @@ export class ArtistController {
     return this.artistService.update(id, updateArtistDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  @HttpCode(204)
   deleteArtist(@Param() { id }: { id: string }) {
     if (!validate(id)) Errors.invalidId;
     return this.artistService.delete(id);

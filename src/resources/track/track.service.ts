@@ -20,19 +20,6 @@ export class TrackService {
     }
   };
 
-  private _foundTrackFavs = async (id: string) => {
-    try {
-      return await this.prisma.tracks.findFirst({
-        where: {
-          id,
-          favorite: 'favorite',
-        },
-      });
-    } catch (err) {
-      throw Errors.internalServer;
-    }
-  };
-
   async findAll() {
     return await this.prisma.tracks.findMany();
   }
@@ -79,20 +66,11 @@ export class TrackService {
 
   async delete(id: string) {
     const track = await this._foundTrack(id);
-    const trackInFav = this._foundTrackFavs(id);
     if (!track) Errors.recordNotFound;
     await this.prisma.tracks.delete({
       where: {
         id,
       },
     });
-
-    // if (trackInFav) {
-    //   this.prisma.favs.deleteMany({
-    //     where: {
-    //       tracks: track.id,
-    //     },
-    //   });
-    // }
   }
 }

@@ -1,6 +1,6 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { IArtist, ICreateArtistDto, IUpdateArtistDto } from 'src/types';
+import { ICreateArtistDto, IUpdateArtistDto } from 'src/types';
 import { Errors } from 'src/errors';
 import { PrismaService } from '../prisma.service';
 

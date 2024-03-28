@@ -57,7 +57,7 @@ export class UserService {
   async update(id: string, oldPassword: string, newPassword: string) {
     const user = await this._foundUser(id);
     if (!user) Errors.recordNotFound;
-    if (oldPassword !== user.password) Errors.wrongPassword;
+    if (oldPassword !== user.password) Errors.invalidCreds;
     user.password = newPassword;
     user.version++;
     user.updatedAt = +Date.now();

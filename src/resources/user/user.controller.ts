@@ -5,13 +5,13 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
-  Post,
   Put,
   UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
-import { ICreateUserDto, IUpdatePasswordDto, IUser } from 'src/types';
+import { IUpdatePasswordDto } from 'src/types';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { validate } from 'uuid';
@@ -34,13 +34,6 @@ export class UserController {
     return this.userService.getById(id);
   }
 
-  @Post()
-  createUser(@Body() createUserDto: ICreateUserDto): Promise<UserEntity> {
-    const { login, password } = createUserDto;
-    if (!login || !password) Errors.invalidBody;
-    return this.userService.create(login, password);
-  }
-
   @Put(':id')
   changeUserPassword(
     @Param() { id }: { id: string },
@@ -52,8 +45,8 @@ export class UserController {
     return this.userService.update(id, oldPassword, newPassword);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  @HttpCode(204)
   deleteUser(@Param() { id }: { id: string }) {
     if (!validate(id)) Errors.badId;
     return this.userService.delete(id);

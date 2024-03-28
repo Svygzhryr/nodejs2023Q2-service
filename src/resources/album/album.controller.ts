@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -49,8 +50,8 @@ export class AlbumController {
     return this.albumService.update(id, updateAlbumDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  @HttpCode(204)
   deleteAlbum(@Param() { id }: { id: string }) {
     if (!validate(id)) Errors.invalidId;
     return this.albumService.delete(id);

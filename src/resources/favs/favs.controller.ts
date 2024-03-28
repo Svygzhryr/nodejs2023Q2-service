@@ -3,6 +3,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   UseFilters,
@@ -29,8 +30,8 @@ export class FavsController {
     return this.favsService.addTrack(id);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('track/:id')
-  @HttpCode(204)
   removeTrackFromFavs(@Param() { id }: { id: string }): Promise<void> {
     if (!validate(id)) Errors.invalidId;
     return this.favsService.removeTrack(id);
@@ -42,8 +43,8 @@ export class FavsController {
     return this.favsService.addAlbum(id);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('album/:id')
-  @HttpCode(204)
   removeAlbumFromFavs(@Param() { id }: { id: string }): Promise<void> {
     if (!validate(id)) Errors.invalidId;
     return this.favsService.removeAlbum(id);
@@ -55,8 +56,8 @@ export class FavsController {
     return this.favsService.addArtist(id);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('artist/:id')
-  @HttpCode(204)
   removeArtistFromFavs(@Param() { id }: { id: string }): Promise<void> {
     if (!validate(id)) Errors.invalidId;
     return this.favsService.removeArtist(id);

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -49,8 +50,8 @@ export class TrackController {
     return this.trackService.update(id, updateTrackDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  @HttpCode(204)
   deleteDrack(@Param() { id }: { id: string }) {
     if (!validate(id)) Errors.invalidId;
     return this.trackService.delete(id);

@@ -19,8 +19,8 @@ export class Errors {
     );
   }
 
-  static get wrongPassword() {
-    throw new HttpException('Wrong old password', 403);
+  static get invalidCreds() {
+    throw new HttpException('No user with such login/password', 403);
   }
 
   static get badId() {
@@ -34,11 +34,16 @@ export class Errors {
   static get internalServer() {
     throw new InternalServerErrorException();
   }
+
+  static get alreadyExists() {
+    throw new HttpException('User already exists', 403);
+  }
 }
 
 export const errors = {
   400: 'Bad request. Check your url path or request body',
-  403: 'Forbidden. Invalid credentials',
+  401: 'Uauthorized',
+  403: 'Forbidden. Invalid credentials or user already exists',
   404: 'Record with this id is not found',
   422: 'Unprocessable entity',
   500: 'Internal server error',

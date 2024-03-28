@@ -7,9 +7,17 @@ import { FavsModule } from './resources/favs/favs.module';
 import { ArtistModule } from './resources/artist/artist.module';
 import { AppController } from './app.controller';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { AuthModule } from './resources/auth/auth.module';
 
 @Module({
-  imports: [UserModule, TrackModule, AlbumModule, FavsModule, ArtistModule],
+  imports: [
+    UserModule,
+    TrackModule,
+    AlbumModule,
+    FavsModule,
+    ArtistModule,
+    AuthModule,
+  ],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {

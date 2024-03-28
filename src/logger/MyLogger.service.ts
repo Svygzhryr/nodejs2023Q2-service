@@ -24,7 +24,7 @@ export class MyLogger implements LoggerService {
   ) {
     fs.stat(filePath, (err, stats) => {
       if (err === null) {
-        if (stats.size > +process.env.LOG_MAX_SIZE - 5000) {
+        if (stats.size > +process.env.LOG_MAX_SIZE - 1000) {
           index++;
           this._createLogFile(
             this._logPath(index, isError),
